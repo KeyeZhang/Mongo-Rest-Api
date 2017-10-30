@@ -11,6 +11,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   }
   console.log('Connected to mongodb server');
 
+
   //toArray returns a promise!! can use "then" to print the data sent back
   db.collection('Todos').find({completed:true}).toArray().then((docs) => {
     console.log('Todos');
@@ -18,7 +19,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   }, (err) =>{
     console.log('unable to fetch todo')
   });
-
+  //count() also return a promise
   db.collection('Todos').find().count().then((count) => {
     console.log(`Todos count: ${count}`);
   }, (err) =>{
