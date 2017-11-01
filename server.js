@@ -14,17 +14,29 @@ app.listen(3000, () => {
 //we  can send JSON to express app
 app.use(bodyParser.json());
 
-//set route!
+//set out first route!
 // params: url, and callback
 app.post('/todos',(req,res) => {
   var todo = new Todo({
     text: req.body.text
   });
-
   todo.save().then((doc) =>{
     res.send(doc);
   }, (err) => {
     res.status(400).send(err);
+  });
+});
+
+//second route
+app.get('/todos', (req, res) => {
+  Todo.find().then((todos) => {
+    //res.send(todos); not the best way tos send back arrays
+    res.send({  //make it a object, you can customize other attributes added by you
+      todos,
+      code:'ss'
+    })
+  }, (e) => {
+    res.status(400).send(e);
   });
 });
 
