@@ -6,11 +6,17 @@ const request = require('supertest');
 const {app} = require('../server');
 const {Todo} = require('../model/todos');
 
+//seed data
+const seed_todos = [{
+  text: 'First test todo'
+}, {
+  text: 'Second test todo'
+}];
 //clear the database everytime when run the first test, to cater to the assumption
 beforeEach((done) => {
   Todo.remove({}).then(() => {
-    done();
-  });
+    Todo.insertMany(seed_todos);
+  }).then(() => {done()});
 });
 
 //add test cases
@@ -31,8 +37,9 @@ describe('POST/todos', () => {
             return done(err);
           }//test indeed failed
 
-          //assumption for the database: it's empty at the beginning
-          Todo.find().then((todos) => {
+          //assumption for the database: it's has two seed data at the beginning
+          //only find the one match the 'text'
+          Todo.find({text}).then((todos) => {
             //assertions
             expect(todos.length).toBe(1);
             expect(todos[0].text).toBe(text);
@@ -54,9 +61,25 @@ describe('POST/todos', () => {
           return done(err);
         }
         Todo.find().then((todos) => {
-          expect(todos.length).toBe(0);
+          //toBe(2):the two orginal seed data
+          expect(todos.length).toBe(2);
           done();
         }).catch((e) => done(e));
       });
+    });
+  });
+
+
+  describe('GET/todos', () => {
+    it('should get all todos', (done) => {
+      request(app)
+        .get('/todos')
+        //asertions about what come back
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.todos.length).toBe(2)
+        })
+        .end(done);
+        //no need as above, becuz we are not doing anything async
     });
   });
