@@ -51,3 +51,5 @@ var newUser = new User({
 // }, (err) =>{
 //   console.log("Saving failure");
 // })
+
+module.exports = {app};
