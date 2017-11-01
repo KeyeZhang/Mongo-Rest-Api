@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var {mongoose} = require('./db/mongoose');
+var {ObjectID} = require('mongodb');
 //create a todo model using mongoose!
 //two params: name string, model object
 var {Todo} = require('./model/todos');
@@ -41,6 +42,44 @@ app.get('/todos', (req, res) => {
 });
 
 //GET /todos/123
+app.get('/todos/:id', (req, res) => {
+  //get the id from url input by users
+  var id = req.params.id;
+  //Tasks!:
+
+  //valid id using isValid
+  //404 - send back an empty body
+
+  //findById
+    //success
+      //if todo - send it back
+      //if no todo = send back a 404 with empty body
+    //error
+      //400 - and send empty body back
+
+  if(!ObjectID.isValid(id)){
+    console.log('Invalid ID');
+    return res.status(404).send();
+  }
+
+  Todo.findById({
+    _id: id
+  })
+  .then((todo) => {
+    if(!todo){
+      console.log('Id not found');
+      return res.status(404).send();
+    }
+    res.status(200).send({
+      todo: todo
+    });
+  })
+  .catch((e) => {
+    console.log('Error')
+    res.status(400).send();
+  });
+
+});
 
 //create a instance based on our model
 var newTodo = new Todo({
