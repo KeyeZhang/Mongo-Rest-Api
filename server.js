@@ -40,6 +40,8 @@ app.get('/todos', (req, res) => {
   });
 });
 
+//GET /todos/123
+
 //create a instance based on our model
 var newTodo = new Todo({
   text: "  Drinking wine  ",
