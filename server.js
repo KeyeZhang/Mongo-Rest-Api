@@ -43,7 +43,7 @@ app.get('/todos', (req, res) => {
   });
 });
 
-//GET /todos/123
+//Route: GET /todos/123
 app.get('/todos/:id', (req, res) => {
   //get the id from url input by users
   var id = req.params.id;
@@ -82,6 +82,29 @@ app.get('/todos/:id', (req, res) => {
   });
 
 });
+
+//Route: Delete
+app.delete('/todos/:id', (req, res) => {
+  //get id
+  var id = req.params.id;
+  //check if valid: 404
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+  //valid: findByIdAndRemove
+    //success
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo){
+      return res.status(404).send();
+    }
+    res.send(todo);
+  })
+  .catch((e) => {
+    return res.status(400).send();
+  });
+});
+
+
 
 //create a instance based on our model
 var newTodo = new Todo({
